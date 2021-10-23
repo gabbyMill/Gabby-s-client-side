@@ -1,0 +1,49 @@
+.main {
+  display: flex;
+  flex-direction: column;
+  margin: 3.2rem auto;
+}
+
+img:hover {
+  background-color: #00ffaa;
+}
+
+.buttons {
+  display: flex;
+}
+
+.dropdown-menu {
+  height: 25vh;
+  overflow: scroll;
+}
+
+.info {
+  margin: 1rem;
+  padding: 1rem;
+  background: #32beff;
+}
+
+.name {
+  display: flex;
+  justify-content: center;
+  background: #96d136;
+  font-size: 2.35rem;
+}
+
+img {
+  display: flex;
+  justify-content: center;
+  margin: 5vh auto;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.footer {
+  margin-top: 55vh;
+  margin-left: 0;
+}
+
+/*# sourceMappingURL=output.css.map */
