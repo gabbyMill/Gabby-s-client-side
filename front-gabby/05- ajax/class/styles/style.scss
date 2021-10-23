@@ -1,49 +1,70 @@
 .main {
-    display: flex;
-    flex-direction: column;
-    margin: 3.2rem auto;
+  display: flex;
+  flex-direction: column;
+  margin: 3.2rem auto;
 }
 
 img {
-    &:hover {
-        background-color: rgb(0, 255, 170);
-    }
+  &:hover {
+    background-color: rgb(0, 255, 170);
+  }
 }
 
 .buttons {
-    display: flex;
+  display: flex;
 }
 
 .dropdown-menu {
-    height: 25vh;
-    overflow: scroll;
+  height: 25vh;
+  overflow: scroll;
 }
 
 .info {
-    margin: 1rem;
-    padding: 1rem;
-    background: rgb(50, 190, 255);
+  margin: 1rem;
+  padding: 1rem;
+  background: rgb(50, 190, 255);
 }
 
 .name {
-    display: flex;
-    justify-content: center;
-    background: rgb(150, 209, 54);
-    font-size: 2.35rem;
+  display: flex;
+  justify-content: center;
+  background: rgb(150, 209, 54);
+  font-size: 2.35rem;
 }
 
-img{
-    display: flex;
-    justify-content: center;
-    margin: 5vh auto;
+img {
+  display: flex;
+  justify-content: center;
+  margin: 5vh auto;
 }
 
 .buttons {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
 .footer {
-    margin-top: 55vh;
-    margin-left: 0;
+  margin-top: 55vh;
+  margin-left: 0;
+}
+
+.bar {
+  margin: 0.3rem;
+}
+
+.caught {
+  font-size: 1.5rem;
+}
+
+.btn3 {
+  background-color: aqua !important;
+}
+
+.d3 {
+  background-color: aqua !important;
+}
+
+.alert {
+  background-color: black;
+  color: red;
 }

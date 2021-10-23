@@ -46,4 +46,25 @@ img {
   margin-left: 0;
 }
 
+.bar {
+  margin: 0.3rem;
+}
+
+.caught {
+  font-size: 1.5rem;
+}
+
+.btn3 {
+  background-color: aqua !important;
+}
+
+.d3 {
+  background-color: aqua !important;
+}
+
+.alert {
+  background-color: black;
+  color: red;
+}
+
 /*# sourceMappingURL=output.css.map */
