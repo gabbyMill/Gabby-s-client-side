@@ -1,5 +1,3 @@
-// the pokemon data will not be correctly created in the user folder
-// did not get to doing it as is was not a requirement
 const welcome = document.querySelector(".welcome");
 const btn1 = document.querySelector(".btn1");
 const btn2 = document.querySelector(".btn2");
@@ -11,8 +9,8 @@ const arrayOfButtons = [
 const arrayOfDropDown = [
   document.querySelector(".dropdown-menu1"),
   document.querySelector(".dropdown-menu2"),
+  document.querySelector(".dropdown-menu3"),
 ];
-// btn2.classList.remove('d-none')
 
 const display = document.querySelector(".display");
 const searchBar = document.querySelector(".search-bar");
@@ -27,6 +25,8 @@ searchBar.addEventListener("keydown", e => {
 
 const fetchPokemon = async (pokemon, username, flag) => {
   try {
+    // psuedo:
+    // if (!username.includes(pokemon)) removeClassCaught
     welcome.classList.remove("alert");
     welcome.textContent = `Good to see you ${username}\nEnjoy the Pokédex`;
     let lowerCaseOrNumber;
@@ -45,6 +45,10 @@ const fetchPokemon = async (pokemon, username, flag) => {
       }
     );
     // axios get cannot have body ?
+
+    if (![...arrayOfDropDown[2].classList].includes("displaying")) {
+      fillCaughtDropDown(res.data.id, userName.value);
+    }
 
     const {
       name: n,
@@ -67,12 +71,6 @@ const fetchPokemon = async (pokemon, username, flag) => {
           createElement("catch", "button", [res.data, username]),
           createElement("release", "button", [res.data, username])
         );
-    } else {
-      // location.reload();
-      // document.querySelector(".catch").remove;
-      // document.querySelector(".release").remove;
-      // fetchPokemon(pokemon, userName.value, true); // new user
-      // // not working with switching user
     }
     display.append(
       createElement(n, "div", res.data),
@@ -90,18 +88,30 @@ const fetchPokemon = async (pokemon, username, flag) => {
 };
 
 async function catchOrRelease(e, id, username) {
+  // username is not helping here
   if ([...e.target.classList].includes("catch")) {
     e.target.classList.add("caught");
-    const res = await axios.put(
-      `http://localhost:3000/pokemon/catch/${"" + id}`,
-      { pokemon: { pokemonId: id } },
+    const pokemonName = await axios.get(
+      `http://localhost:3000/pokemon/get/${id}`,
       {
         headers: {
           "Content-Type": "application/json", // content type caps or not ?
-          username,
+          username: userName.value,
         },
       }
     );
+    const res = await axios.put(
+      `http://localhost:3000/pokemon/catch/${"" + id}`,
+      { pokemon: { pokemonName: pokemonName.data.name } },
+      {
+        headers: {
+          "Content-Type": "application/json", // content type caps or not ?
+          username: userName.value,
+        },
+      }
+    );
+
+    fillCaughtDropDown(id, userName.value);
   } else {
     document.querySelector(".catch").classList.remove("caught");
     const res = await axios.delete(
@@ -116,7 +126,6 @@ async function catchOrRelease(e, id, username) {
   }
 }
 
-// fetchPokemon('charizard')
 function createElement(pokemonData, typeOfElement, apiData) {
   display.textContent = "";
   let types = "";
@@ -134,11 +143,8 @@ function createElement(pokemonData, typeOfElement, apiData) {
   });
 
   if (!property && typeof pokemonData !== "string") {
-    // this is only for types ? Think so
-
     btn3.classList.remove("d-none"); // add caught pokemon here
     btn3.textContent = "Caught";
-    fillCaughtDropDown(userName);
 
     property = "Types";
     pokemonData.forEach((obj, i) => {
@@ -169,9 +175,6 @@ function createElement(pokemonData, typeOfElement, apiData) {
     element.alt = apiData.back_pic; // back default
     element.addEventListener("mouseover", hoverOverImage);
     element.addEventListener("mouseleave", hoverOverImage);
-    // element.addEventListener('click', () => {
-    //     getEvolution(apiData.id) // or apiData.name
-    // })
   } else {
     if (property === "Name") {
       element.classList.add("name");
@@ -243,18 +246,14 @@ arrayOfDropDown.forEach(dropdown => {
   });
 });
 
-// helpers:
-// async function sendHeaders(username) {
-//   const res = await axios.post("http://localhost:3000", {
-//     method: "POST", // or put
-//     headers: {
-//       "content-type": "application/json",
-//       username,
-//     },
-//   });
-// }
-
-async function fillCaughtDropDown(username) {
+async function fillCaughtDropDown(id, username) {
+  if (![...arrayOfDropDown[2].classList].includes("displaying")) {
+    arrayOfDropDown[2].textContent = "";
+  } else {
+    arrayOfDropDown[2].classList.add("displaying");
+  }
+  console.log("caught drop down");
+  // console.log("username: ", username);
   // check which files are in userfolder and display
   const res = await axios.get(`http://localhost:3000/pokemon/`, {
     headers: {
@@ -262,5 +261,23 @@ async function fillCaughtDropDown(username) {
       username,
     },
   });
-  console.log(res);
+  let caughtArray = [];
+  for (let i = 0; i < res.data.length; i++) {
+    const result = await axios.get(
+      `http://localhost:3000/pokemon/get/${res.data[i]}`,
+      {
+        headers: {
+          "Content-Type": "application/json", // content type caps or not ?
+          username,
+        },
+      }
+    );
+    caughtArray.push(result.data.name);
+  }
+  console.log("caughtArray", caughtArray);
+  console.log(btn3);
+  caughtArray.forEach(pokemon => {
+    arrayOfDropDown[2].append(createDropDownContent(pokemon));
+  });
+  return;
 }
