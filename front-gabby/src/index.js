@@ -22,11 +22,18 @@ searchButton.addEventListener("click", () => {
 searchBar.addEventListener("keydown", e => {
   if (e.key === "Enter") fetchPokemon(searchBar.value, userName.value);
 });
+userName.addEventListener("keydown", e => {
+  if (e.key === "Enter") fetchPokemon(searchBar.value, userName.value);
+});
 
 const fetchPokemon = async (pokemon, username, flag) => {
   try {
-    // psuedo:
-    // if (!username.includes(pokemon)) removeClassCaught
+    const catchButton = document.querySelector(".catch");
+    if (catchButton) {
+      if ([...catchButton.classList].includes("caught")) {
+        catchButton.classList.remove("caught");
+      }
+    }
     welcome.classList.remove("alert");
     welcome.textContent = `Good to see you ${username}\nEnjoy the Pokédex`;
     let lowerCaseOrNumber;
@@ -44,7 +51,6 @@ const fetchPokemon = async (pokemon, username, flag) => {
         },
       }
     );
-    // axios get cannot have body ?
 
     if (![...arrayOfDropDown[2].classList].includes("displaying")) {
       fillCaughtDropDown(res.data.id, userName.value);
@@ -58,6 +64,8 @@ const fetchPokemon = async (pokemon, username, flag) => {
       back_pic,
       front_pic,
     } = res.data; // sprites
+    // check if this user has this pokemon:
+
     let typeList;
     if (t.length < 2) {
       typeList = await fetchTypeList(t[0].name);
@@ -79,6 +87,15 @@ const fetchPokemon = async (pokemon, username, flag) => {
       createElement(front_pic, "img", res.data),
       createElement(t, "div", typeList)
     );
+    // setTimeout(() => {
+    const dropdown3 = document.querySelector(".dropdown-menu3");
+    const children = dropdown3.children;
+    for (let i = 0; i < children.length; i++) {
+      if (children[i].textContent === n) {
+        console.log("equals to n");
+      }
+    }
+    // }, 500);
   } catch (error) {
     display.textContent = ""; // In case of a pokemon already appearing on the page, this deletes it from display
     console.log(error);
@@ -89,10 +106,12 @@ const fetchPokemon = async (pokemon, username, flag) => {
 
 async function catchOrRelease(e, id, username) {
   // username is not helping here
+  // id is unnecessary but it is not good practice to take data from the dom as i am doing here
+  // add functionality that adds class caught if pokemon is caught when switching between pokemon
   if ([...e.target.classList].includes("catch")) {
     e.target.classList.add("caught");
     const pokemonName = await axios.get(
-      `http://localhost:3000/pokemon/get/${id}`,
+      `http://localhost:3000/pokemon/get/${searchBar.value}`,
       {
         headers: {
           "Content-Type": "application/json", // content type caps or not ?
@@ -101,7 +120,7 @@ async function catchOrRelease(e, id, username) {
       }
     );
     const res = await axios.put(
-      `http://localhost:3000/pokemon/catch/${"" + id}`,
+      `http://localhost:3000/pokemon/catch/${"" + searchBar.value}`,
       { pokemon: { pokemonName: pokemonName.data.name } },
       {
         headers: {
@@ -252,7 +271,6 @@ async function fillCaughtDropDown(id, username) {
   } else {
     arrayOfDropDown[2].classList.add("displaying");
   }
-  console.log("caught drop down");
   // console.log("username: ", username);
   // check which files are in userfolder and display
   const res = await axios.get(`http://localhost:3000/pokemon/`, {
@@ -274,8 +292,6 @@ async function fillCaughtDropDown(id, username) {
     );
     caughtArray.push(result.data.name);
   }
-  console.log("caughtArray", caughtArray);
-  console.log(btn3);
   caughtArray.forEach(pokemon => {
     arrayOfDropDown[2].append(createDropDownContent(pokemon));
   });
